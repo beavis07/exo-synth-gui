@@ -42,8 +42,6 @@ import SignalWifi4BarIcon from "@material-ui/icons/SignalWifi4Bar";
 
 import {useStyles} from "./styles";
 
-const socket = openSocket("http://localhost:7000");
-
 const SignalIcons = [
     <SignalWifi0BarIcon key={1} />,
     <SignalWifi1BarIcon key={2} />,
@@ -64,6 +62,7 @@ const WifiIcon = ({connected, signal = 100}) => {
 function App() {
     const classes = useStyles();
 
+    const {current: socket} = React.useRef(openSocket("http://localhost:7000"));
     const [stats, setStats] = React.useState(null);
     const [shuttingDown, setShuttingDown] = React.useState(false);
     const [showShutdownConfirm, setShowShutdownConfirm] = React.useState(false);
