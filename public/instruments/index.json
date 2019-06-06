@@ -1,0 +1,62 @@
+[
+    {
+        "name": "Outside",
+        "description": "Dirty Saw + Chorus",
+        "icon": "img/outside.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Keep Walking",
+        "description": "Piano + Reverb",
+        "icon": "img/keep-walking.jpg",
+        "instrument": "xiz/0002-SynthPiano.xiz"
+    },
+    {
+        "name": "Sudden Lake",
+        "description": "Dirty Wave + Portmanteau",
+        "icon": "img/sudden-lake.jpg",
+        "instrument": "xiz/0003-SuddenLake.xiz"
+    },
+    {
+        "name": "House of Disappearing Bricks",
+        "description": "Distorted",
+        "icon": "img/bricks.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Kuiper",
+        "description": "Distorted",
+        "icon": "img/kuiper.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Holes",
+        "description": "Distorted",
+        "icon": "img/holes.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Track 7",
+        "description": "Who only knows???",
+        "icon": "img/felix.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Track 8",
+        "description": "Who only knows???",
+        "icon": "img/felix.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Track 9",
+        "description": "Who only knows???",
+        "icon": "img/felix.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    },
+    {
+        "name": "Track 10",
+        "description": "Who only knows???",
+        "icon": "img/felix.jpg",
+        "instrument": "xiz/0001-Outside.xiz"
+    }
+]

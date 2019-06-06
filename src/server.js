@@ -4,7 +4,7 @@ import express from "express";
 import socketIo from "socket.io";
 import http from "http";
 import osc from "osc";
-import instruments from "./instruments.json";
+import instruments from "../public/instruments/index";
 
 const app = express();
 const server = http.Server(app);
