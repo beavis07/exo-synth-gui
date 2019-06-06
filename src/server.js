@@ -24,31 +24,32 @@ server.listen(7000);
 const getStats = () => ({
     wifi: {
         connected: true,
-        signal: 100,
+        signal: Math.floor(Math.random() * 101),
         network: "BEAD"
     },
-    cpu: [0.18, 2.37, 1.14, 0.91],
+    cpu: [
+        Math.floor(1000 + Math.random() * 9000) / 100,
+        Math.floor(1000 + Math.random() * 9000) / 100,
+        Math.floor(1000 + Math.random() * 9000) / 100,
+        Math.floor(1000 + Math.random() * 9000) / 100
+    ],
     memory: {
-        total: 1000230,
-        free: 423123
+        total: 1000000,
+        free: Math.floor(10000000 + Math.random() * 90000000) / 100
     },
     midi: "ReMOTE SL :1 :29"
 });
 
-const sendInstruments = () => setTimeout(() => io.emit("instruments", instruments), 1000);
+const sendInstruments = client => setTimeout(() => client.emit("instruments", instruments), 1000);
 const sendShutdown = () => io.emit("shutdown");
 const sendStats = () => io.emit("stats", getStats());
 
+const statsTimer = setInterval(sendStats, 3000);
+
 const shutdown = () => {
     //spawn("shutdown", ["-h", "now"]).on("close", sendShutdown);
+    clearInterval(statsTimer);
     setTimeout(sendShutdown, 2000);
-};
-
-const connect = client => {
-    client.on("get-instruments", sendInstruments);
-    client.on("get-stats", sendStats);
-    client.on("start-shutdown", shutdown);
-    client.on("load-instrument", loadInstrument);
 };
 
 const loadInstrument = instrument => {
@@ -59,6 +60,12 @@ const loadInstrument = instrument => {
 
     console.log("osc", msg.address, msg.args); // eslint-disable-line no-console
     udpPort.send(msg);
+};
+
+const connect = client => {
+    client.on("get-instruments", () => sendInstruments(client));
+    client.on("start-shutdown", shutdown);
+    client.on("load-instrument", loadInstrument);
 };
 
 io.on("connection", connect);
