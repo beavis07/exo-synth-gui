@@ -5,9 +5,11 @@
   "dependencies": {
     "@material-ui/core": "^4.0.2",
     "@material-ui/icons": "^4.0.1",
+    "cpu-stat": "^2.0.1",
     "eslint-plugin-prettier": "^3.1.0",
     "esm": "^3.2.25",
     "express": "^4.17.1",
+    "lodash": "^4.17.11",
     "osc": "^2.3.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -16,7 +18,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "server": "node -r esm src/server",
+    "server": "node -r esm --no-warnings src/server",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -1,10 +1,15 @@
+import {range} from "lodash/fp";
 import {spawn} from "child_process";
-
+import {promises as fs} from "fs";
+import os from "os";
+import path from "path";
 import express from "express";
 import socketIo from "socket.io";
 import http from "http";
 import osc from "osc";
-import instruments from "../public/instruments/index";
+import cpuStat from "cpu-stat";
+
+const BASE_PATH = path.resolve("public/instruments/");
 
 const app = express();
 const server = http.Server(app);
@@ -21,29 +26,46 @@ var udpPort = new osc.UDPPort({
 udpPort.open();
 server.listen(7000);
 
-//TODO: Get real stats
-const getStats = () => ({
+const sampleMs = 2000;
+
+const getStats = async () => ({
     wifi: {
         connected: true,
         signal: Math.floor(Math.random() * 101),
         network: "BEAD"
     },
-    cpu: [
-        Math.floor(1000 + Math.random() * 9000) / 100,
-        Math.floor(1000 + Math.random() * 9000) / 100,
-        Math.floor(1000 + Math.random() * 9000) / 100,
-        Math.floor(1000 + Math.random() * 9000) / 100
-    ],
     memory: {
-        total: 1000000,
-        free: Math.floor(10000000 + Math.random() * 90000000) / 100
+        total: Math.floor(os.totalmem() / 1024),
+        free: Math.floor(os.freemem() / 1024)
     },
+    cpu: await Promise.all(
+        range(0, cpuStat.totalCores()).map(
+            coreIndex =>
+                new Promise(resolve =>
+                    cpuStat.usagePercent({coreIndex, sampleMs}, (err, percent) => resolve(Number(percent).toFixed(2)))
+                )
+        )
+    ),
+
     midi: "ReMOTE SL :1 :29"
 });
 
-const sendInstruments = client => setTimeout(() => client.emit("instruments", instruments), 1000);
+const sendInstruments = async client => {
+    try {
+        const fileContents = await fs.readFile(`${BASE_PATH}/index.json`);
+        const instruments = JSON.parse(fileContents);
+        return client.emit("instruments", instruments);
+    } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("Instrument File error", err);
+    }
+};
+
 const sendShutdown = () => io.emit("shutdown");
-const sendStats = () => io.emit("stats", getStats());
+const sendStats = async () => {
+    const stats = await getStats();
+    io.emit("stats", stats);
+};
 
 const statsTimer = setInterval(sendStats, 3000);
 
@@ -56,7 +78,7 @@ const shutdown = () => {
 const loadInstrument = instrument =>
     udpPort.send({
         address: "/load_xiz",
-        args: [{type: "i", value: 1}, {type: "s", value: instrument}]
+        args: [{type: "i", value: 0}, {type: "s", value: `${BASE_PATH}/${instrument}`}]
     });
 
 const connect = client => {
