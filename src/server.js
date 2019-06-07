@@ -8,12 +8,14 @@ import socketIo from "socket.io";
 import http from "http";
 import osc from "osc";
 import cpuStat from "cpu-stat";
+import wifi from "node-wifi";
 
 const BASE_PATH = path.resolve("public/instruments/");
 
 const app = express();
 const server = http.Server(app);
 const io = socketIo(server);
+wifi.init({iface: null});
 
 var udpPort = new osc.UDPPort({
     localAddress: "127.0.0.1",
@@ -28,27 +30,34 @@ server.listen(7000);
 
 const sampleMs = 2000;
 
-const getStats = async () => ({
-    wifi: {
-        connected: true,
-        signal: Math.floor(Math.random() * 101),
-        network: "BEAD"
-    },
-    memory: {
-        total: Math.floor(os.totalmem() / 1024),
-        free: Math.floor(os.freemem() / 1024)
-    },
-    cpu: await Promise.all(
-        range(0, cpuStat.totalCores()).map(
-            coreIndex =>
-                new Promise(resolve =>
-                    cpuStat.usagePercent({coreIndex, sampleMs}, (err, percent) => resolve(Number(percent).toFixed(2)))
-                )
-        )
-    ),
-
-    midi: "ReMOTE SL :1 :29"
-});
+const getStats = async () => {
+    return {
+        wifi: await new Promise(resolve =>
+            wifi.getCurrentConnections((err, [connection] = []) =>
+                resolve({
+                    connected: !!connection,
+                    signal: Math.abs(connection.signal_level),
+                    network: connection && connection.ssid
+                })
+            )
+        ),
+        memory: {
+            total: Math.floor(os.totalmem() / 1024),
+            free: Math.floor(os.freemem() / 1024)
+        },
+        cpu: await Promise.all(
+            range(0, cpuStat.totalCores()).map(
+                coreIndex =>
+                    new Promise(resolve =>
+                        cpuStat.usagePercent({coreIndex, sampleMs}, (err, percent) =>
+                            resolve(Number(percent).toFixed(2))
+                        )
+                    )
+            )
+        ),
+        midi: "ReMOTE SL :1 :29"
+    };
+};
 
 const sendInstruments = async client => {
     try {
