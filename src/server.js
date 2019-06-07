@@ -21,6 +21,7 @@ var udpPort = new osc.UDPPort({
 udpPort.open();
 server.listen(7000);
 
+//TODO: Get real stats
 const getStats = () => ({
     wifi: {
         connected: true,
