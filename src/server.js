@@ -47,20 +47,16 @@ const sendStats = () => io.emit("stats", getStats());
 const statsTimer = setInterval(sendStats, 3000);
 
 const shutdown = () => {
-    //spawn("shutdown", ["-h", "now"]).on("close", sendShutdown);
     clearInterval(statsTimer);
-    setTimeout(sendShutdown, 2000);
+    //spawn("shutdown", ["-h", "now"]).on("close", sendShutdown);
+    spawn("sleep", ["2"]).on("close", sendShutdown);
 };
 
-const loadInstrument = instrument => {
-    const msg = {
+const loadInstrument = instrument =>
+    udpPort.send({
         address: "/load_xiz",
         args: [{type: "i", value: 1}, {type: "s", value: instrument}]
-    };
-
-    console.log("osc", msg.address, msg.args); // eslint-disable-line no-console
-    udpPort.send(msg);
-};
+    });
 
 const connect = client => {
     client.on("get-instruments", () => sendInstruments(client));
