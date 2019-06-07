@@ -10,7 +10,6 @@ import InstrumentList from "./InstrumentList";
 import CurrentInstrument from "./CurrentInstrument";
 import NavigationButtons from "./NavigationButtons";
 import ShutdownDialog from "./ShutdownDialog";
-import ShuttingDownDialog from "./ShuttingDownDialog";
 
 import {useStyles} from "./styles";
 
@@ -37,7 +36,7 @@ function App() {
             setLoading(false);
         });
         socket.on("shutdown", () => {
-            setShuttingDown(false);
+            setShowShutdownConfirm(false);
             setShutdownComplete(true);
         });
 
@@ -61,7 +60,6 @@ function App() {
         socket.emit("start-shutdown");
         setShuttingDown(true);
         setShowMenu(false);
-        setShowShutdownConfirm(false);
     };
 
     return (
@@ -96,8 +94,7 @@ function App() {
                         </Grid>
 
                         <Menu {...{showMenu, toggleMenu, loadInstruments, toggleShutdownConfirm}} />
-                        <ShutdownDialog {...{showShutdownConfirm, toggleShutdownConfirm, shutdown}} />
-                        <ShuttingDownDialog shuttingDown={shuttingDown} />
+                        <ShutdownDialog {...{shuttingDown, showShutdownConfirm, toggleShutdownConfirm, shutdown}} />
                     </div>
                 </div>
             </div>

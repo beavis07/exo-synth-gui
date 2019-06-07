@@ -41,11 +41,7 @@ export const useStyles = makeStyles(theme => ({
     arrowButton: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#fff"
-    },
-    shutdownCard: {
-        marginTop: theme.spacing(4),
-        minWidth: 275
+        backgroundColor: "#ffffff"
     },
     currentCard: {
         maxHeight: "50%",
@@ -55,8 +51,9 @@ export const useStyles = makeStyles(theme => ({
     cardImage: {
         height: "130px"
     },
-    shutdownText: {
-        marginBottom: theme.spacing(4)
+    dialog: {
+        width: "400px",
+        height: "180px"
     },
     instrumentsLoading: {
         margin: theme.spacing(4)
